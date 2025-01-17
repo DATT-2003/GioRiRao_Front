@@ -1,14 +1,8 @@
 // services/api/endpoints.js
 export const ENDPOINTS = {
-  AUTH: {
-    LOGIN: "/auth/login",
-    REGISTER: "/auth/register",
-    LOGOUT: "/auth/logout",
+  DRINKS: {
+    DRINKS_BY_CATEGORY: (category) => `drinks/category/${category}`,
+    DRINK_DETAILS: (id) => `drinks/${id}`,
+    CATEGORIES: () => `drinks/categories`,
   },
-  USERS: {
-    PROFILE: "/users/profile",
-    UPDATE: "/users/update",
-    SETTINGS: "/users/settings",
-  },
-  // Add more endpoint categories as needed
 };
