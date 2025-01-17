@@ -11,10 +11,10 @@ const initialState = {
 
 export const fetchDrinksByCategory = createAsyncThunk(
   "drinks/fetchDrinksByCategory",
-  async (_, { rejectWithValue }) => {
+  async (category, { rejectWithValue }) => {
     try {
       const response = await DrinkService.getDrinksByCategory(category);
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -23,10 +23,10 @@ export const fetchDrinksByCategory = createAsyncThunk(
 
 export const fetchDrinkDetails = createAsyncThunk(
   "drinks/fetchDrinkDetails",
-  async (_, { rejectWithValue }) => {
+  async (drinkId, { rejectWithValue }) => {
     try {
       const response = await DrinkService.getDrinkDetails(drinkId);
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -37,20 +37,23 @@ export const fetchDrinkCategories = createAsyncThunk(
   "drinks/fetchDrinkCategories",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await DrinkService.getCategories(category);
-      return response.data;
+      const response = await DrinkService.getCategories();
+      return response;
     } catch (error) {
-      rejectWithValue(error);
+      rejectWithValue(error.response.data);
     }
   }
 );
 
-const drinkSlice = createSlice({
+const drinksSlice = createSlice({
   name: "drinks",
   initialState,
   reducers: {
     clearDrinkDetails: (state) => {
       state.drinkDetails = null;
+    },
+    clearDrinksByCategory: (state) => {
+      state.drinksByCategory = [];
     },
   },
   extraReducers: (builder) => {
@@ -96,5 +99,15 @@ const drinkSlice = createSlice({
   },
 });
 
-export const { clearDrinkDetails } = drinkSlice.actions;
-export default drinkSlice.reducer;
+// Actions
+export const { clearSelectedDrink, clearDrinksByCategory } =
+  drinksSlice.actions;
+
+// Selectors
+export const selectCategories = (state) => state.drinks.drinkCategories;
+export const selectDrinksByCategory = (state) => state.drinks.drinksByCategory;
+export const selectSelectedDrink = (state) => state.drinks.drinkDetails;
+export const selectLoading = (state) => state.drinks.loading;
+export const selectError = (state) => state.drinks.error;
+
+export default drinksSlice.reducer;

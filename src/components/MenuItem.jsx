@@ -8,7 +8,6 @@ export const MenuItem = ({ image, title, price, bowls }) => (
     <h3 className="text-white text-lg font-medium mb-1">{title}</h3>
     <div className="flex justify-between items-center">
       <span className="text-white">${price}</span>
-      <span className="text-gray-400 text-sm">{bowls} Bowls available</span>
     </div>
   </div>
 );

@@ -1,31 +1,65 @@
-import { useDispatch } from "react-redux";
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchDrinkDetails,
-  fetchDrinksByCategory,
-  clearDrinkDetails,
   fetchDrinkCategories,
+  fetchDrinksByCategory,
+  fetchDrinkDetails,
+  clearSelectedDrink,
+  clearDrinksByCategory,
+  selectCategories,
+  selectDrinksByCategory,
+  selectSelectedDrink,
+  selectLoading,
+  selectError,
 } from "../redux/features/drinks/drinksSlice";
 
 export const useDrinks = () => {
   const dispatch = useDispatch();
-  const { drinksByCategory, drinkDetails, drinkCategories, loading, error } =
-    useSelector((state) => state.drinks);
 
-  const loadDrinksByCategory = (category) =>
-    dispatch(fetchDrinksByCategory(category));
-  const loadDrinkDetails = (drinkId) => dispatch(fetchDrinkDetails(drinkId));
-  const clearDrinkDetailsInfo = () => dispatch(clearDrinkDetails());
-  const loadDrinkCategories = (category) =>
-    dispatch(fetchDrinkCategories(category));
+  const categories = useSelector(selectCategories);
+  const drinksByCategory = useSelector(selectDrinksByCategory);
+  const selectedDrink = useSelector(selectSelectedDrink);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+
+  const loadCategories = useCallback(() => {
+    dispatch(fetchDrinkCategories());
+  }, [dispatch]);
+
+  const loadDrinksByCategory = useCallback(
+    (category) => {
+      dispatch(fetchDrinksByCategory(category));
+    },
+    [dispatch]
+  );
+
+  const loadDrinkDetails = useCallback(
+    (drinkId) => {
+      dispatch(fetchDrinkDetails(drinkId));
+    },
+    [dispatch]
+  );
+
+  const clearDrink = useCallback(() => {
+    dispatch(clearSelectedDrink());
+  }, [dispatch]);
+
+  const clearDrinks = useCallback(() => {
+    dispatch(clearDrinksByCategory());
+  }, [dispatch]);
 
   return {
+    // State
+    categories,
     drinksByCategory,
-    drinkDetails,
+    selectedDrink,
     loading,
     error,
+    // Actions
+    loadCategories,
     loadDrinksByCategory,
     loadDrinkDetails,
-    clearDrinkDetailsInfo,
-    loadDrinkCategories,
+    clearDrink,
+    clearDrinks,
   };
 };

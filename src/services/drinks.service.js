@@ -7,7 +7,8 @@ export const DrinkService = {
       const response = await api.get(
         ENDPOINTS.DRINKS.DRINKS_BY_CATEGORY(category)
       );
-      return response.data;
+
+      return response.drink.docs;
     } catch (error) {
       throw error;
     }
@@ -15,15 +16,15 @@ export const DrinkService = {
   getDrinkDetails: async (drinkId) => {
     try {
       const response = await api.get(ENDPOINTS.DRINKS.DRINK_DETAILS(drinkId));
-      return response.data;
+      return response.drink;
     } catch (error) {
       throw error;
     }
   },
-  getCategories: async (category) => {
+  getCategories: async () => {
     try {
-      const response = await api.get(ENDPOINTS.DRINKS.CATEGORIES(category));
-      return response.data;
+      const response = await api.get(ENDPOINTS.DRINKS.CATEGORIES());
+      return response.categories;
     } catch (error) {
       throw error;
     }

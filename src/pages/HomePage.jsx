@@ -1,15 +1,47 @@
+import { useEffect } from "react";
 import { SearchBar } from "../components/SearchBar";
 import { MenuItem } from "../components/MenuItem";
 import { CartItem } from "../components/CartItem";
 import CategoryMenu from "../components/CategoryMenu";
-import { useState } from "react";
-import items from "../sampleData/items";
+import { useDrinks } from "../hooks/useDrinks";
 
 export const HomePage = () => {
-  const [menuItems, setMenuItems] = useState(items["Hot Dishes"]);
-  const handleCategoryOnClick = (category) => {
-    setMenuItems(items[category]);
-  };
+  const {
+    categories = [],
+    drinksByCategory,
+    loading,
+    error,
+    loadCategories,
+    loadDrinksByCategory,
+  } = useDrinks();
+
+  useEffect(() => {
+    // Load categories when component mounts
+    loadCategories();
+  }, [loadCategories]);
+
+  // Load first category's drinks when categories are loaded
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      loadDrinksByCategory(categories[0]);
+    }
+  }, [categories, loadDrinksByCategory]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
@@ -23,23 +55,16 @@ export const HomePage = () => {
               <SearchBar />
             </div>
 
-            <CategoryMenu onCategoryMenuChange={handleCategoryOnClick} />
+            <CategoryMenu />
           </header>
 
-          {/* mình cần một aray dữ liệu chứa 1 số object, mỗi object bao gồm: title, price, bowlsbowls 
-gọi là itemsOfCategory
-
-itemsOfCategory dựa trên category
-
-category thay đổi khi chúng ta ấn vào 1 trong 1 những nút của menu
-*/}
           <div className="grid grid-cols-3 gap-6">
-            {menuItems.map((item, index) => (
+            {drinksByCategory?.map((drink) => (
               <MenuItem
-                key={index}
-                title={item.title}
-                price={item.price}
-                bowls={item.bowls}
+                key={drink.id}
+                image={drink.thumbnail}
+                title={drink.name}
+                price={drink.customization[0].price}
               />
             ))}
           </div>
